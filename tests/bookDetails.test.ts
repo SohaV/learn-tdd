@@ -72,6 +72,40 @@ describe('showBookDtls', () => {
         expect(res.send).toHaveBeenCalledWith(`Book details not found for book ${id}`);
     });
 
+    it('should return 404 if the book id is not found', async () => {
+        const id = '67890';
+        // Mocking the Book model's findOne method to throw an error
+        const mockFindOne = jest.fn().mockReturnValue({
+            populate: jest.fn().mockReturnThis(), // Allows method chaining
+            exec: jest.fn().mockResolvedValue(null)
+        });
+        Book.findOne = mockFindOne;
+
+        // Act
+        await showBookDtls(res as Response, id);
+
+        // Assert
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.send).toHaveBeenCalledWith(`Book ${id} not found`);
+    });
+
+    it('should return 404 if the book id is not found', async () => {
+        const id = 12345;
+        // Mocking the Book model's findOne method to throw an error
+        const mockFindOne = jest.fn().mockReturnValue({
+            populate: jest.fn().mockReturnThis(), // Allows method chaining
+            exec: jest.fn().mockResolvedValue(null)
+        });
+        Book.findOne = mockFindOne;
+
+        // Act
+        await showBookDtls(res as Response, id as unknown as string);
+
+        // Assert
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.send).toHaveBeenCalledWith(`Book ${id} not found`);
+    });
+
     it('should return 500 if there is an error fetching the book', async () => {
         // Mocking the Book model's findOne method to throw an error
         Book.findOne = jest.fn().mockImplementation(() => {
